@@ -1,21 +1,5 @@
-import { createPublicKey, KeyObject } from 'crypto';
 import { Log } from '../src/types.js';
-import { readTestData } from './util.js';
-
-function jwkFromRawP256(rawPublicKey: Buffer): KeyObject {
-  // Raw key is 65 bytes: 0x04 (uncompressed) + 32-byte X + 32-byte Y
-  const x = rawPublicKey.subarray(1, 33);
-  const y = rawPublicKey.subarray(33, 65);
-
-  const jwk = {
-    kty: 'EC',
-    crv: 'P-256',
-    x: x.toString('base64url'),
-    y: y.toString('base64url'),
-  };
-
-  return createPublicKey({ key: jwk, format: 'jwk' });
-}
+import { readTestData, jwkFromRawP256 } from './util.js';
 
 export const GOOGLE_PILOT_LOG: Log = {
   description: "Google 'Pilot' log",

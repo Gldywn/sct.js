@@ -1,28 +1,6 @@
 import { createPublicKey, KeyObject } from 'crypto';
 import { Log } from '../src/types.js';
-import { readTestData } from './util.js';
-
-function jwkFromRawEcdsa(rawPublicKey: Buffer): KeyObject {
-  // Determine curve from key length
-  let crv: string;
-  let keyLen: number;
-  if (rawPublicKey.length === 65) {
-    crv = 'P-256';
-    keyLen = 32;
-  } else if (rawPublicKey.length === 97) {
-    crv = 'P-384';
-    keyLen = 48;
-  } else {
-    throw new Error('Unknown curve for raw public key');
-  }
-
-  // Raw key is 65/97 bytes: 0x04 (uncompressed) + X-coord + Y-coord
-  const x = rawPublicKey.subarray(1, 1 + keyLen);
-  const y = rawPublicKey.subarray(1 + keyLen, 1 + 2 * keyLen);
-
-  const jwk = { kty: 'EC', crv, x: x.toString('base64url'), y: y.toString('base64url') };
-  return createPublicKey({ key: jwk, format: 'jwk' });
-}
+import { readTestData, jwkFromRawEcdsa } from './util.js';
 
 function pkcs1FromRawRsa(rawPublicKey: Buffer): KeyObject {
   return createPublicKey({
