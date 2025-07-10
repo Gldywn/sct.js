@@ -27,8 +27,8 @@
     }
   },
   "scripts": {
-    "test": "tsx --test",
-    "coverage": "c8 --check-coverage --lines 90 --reporter=text --reporter=lcov tsx --test",
+    "test": "tsx --test $(find test -name '*.test.ts')",
+    "coverage": "c8 --check-coverage --lines 95 --reporter=text --reporter=lcov tsx --test $(find test -name '*.test.ts')",
     "dev": "tsx watch src/index.ts",
     "build": "tsup",
     "format": "prettier --write ."
