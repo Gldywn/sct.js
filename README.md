@@ -2,8 +2,6 @@
 
 > This is a full-featured TypeScript port of the excellent [rustls/sct.rs](https://github.com/rustls/sct.rs) library. It is designed to be a 1:1 functional equivalent and includes a faithful port of the original's comprehensive test suite to ensure correctness.
 
-
-
 SCT.js is a Certificate Transparency SCT verifier in TypeScript for Node.js.
 It uses the built-in `node:crypto` module for all cryptographic operations.
 
