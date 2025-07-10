@@ -7,7 +7,7 @@ It uses the built-in `node:crypto` module for all cryptographic operations.
 
 [![Build Status](https://github.com/Gldywn/sct.js/actions/workflows/build.yml/badge.svg)](https://github.com/Gldywn/sct.js/actions/workflows/build.yml)
 [![Coverage Status (codecov.io)](https://codecov.io/gh/Gldywn/sct.js/branch/main/graph/badge.svg)](https://codecov.io/gh/Gldywn/sct.js)
-[![npm](https://img.shields.io/npm/v/sct.js.svg)](https://www.npmjs.com/package/sct.js)
+[![npm](https://img.shields.io/npm/v/@gldywn/sct.js.svg)](https://www.npmjs.com/package/@gldywn/sct.js)
 
 # Status
 Ready for use:

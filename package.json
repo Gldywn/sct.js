@@ -1,5 +1,5 @@
 {
-  "name": "sct.js",
+  "name": "@gldywn/sct.js",
   "version": "1.0.0",
   "description": "Verification of Signed Certificate Timestamps (SCTs) for Certificate Transparency in JavaScript",
   "homepage": "https://github.com/Gldywn/sct.js#readme",
