@@ -24,3 +24,7 @@ export const LOG_ENTRY_TYPE = {
 export const MERKLE_LEAF_TYPE = {
   TIMESTAMPED_ENTRY: 0,
 };
+
+// OID for the SCT extension in X.509 certificates
+// From RFC 6962, section 3.3
+export const SCT_EXTENSION_OID_V1 = '1.3.6.1.4.1.11129.2.4.2';

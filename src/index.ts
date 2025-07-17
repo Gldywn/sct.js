@@ -1,3 +1,6 @@
+export * from './constants.js';
+export * from './types.js';
+
 import { Log, Sct, VerificationError } from './types.js';
 import { parseSct, verifySctSignature } from './verify.js';
 
