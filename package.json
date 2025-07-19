@@ -32,7 +32,7 @@
     "test:generate-test-keys": "tsx scripts/generate-test-keys.ts",
     "test:generate-test-precert-data": "tsx scripts/generate-test-precert-data.ts",
     "test:fetch-test-precert-data": "tsx scripts/fetch-test-precert-data.ts",
-    "coverage": "c8 --check-coverage --lines 95 --reporter=text --reporter=lcov tsx --test $(find test -name '*.test.ts')",
+    "coverage": "c8 --exclude 'scripts/**' --exclude 'test/**' --exclude 'src/utils.ts' --check-coverage --lines 100 --reporter=text --reporter=lcov tsx --test $(find test -name '*.test.ts')",
     "dev": "tsx watch src/index.ts",
     "build": "tsup",
     "format": "prettier --write .",
