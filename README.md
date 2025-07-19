@@ -138,10 +138,6 @@ To run the complete test suite:
 npm test
 ```
 
-## Original Implementation
-
-> This is a full-featured TypeScript port of the excellent [rustls/sct.rs](https://github.com/rustls/sct.rs) library. It is designed to be a 1:1 functional equivalent and includes a faithful port of the original's comprehensive test suite to ensure correctness.
-
 ## License
 
 SCT.js is distributed under the MIT license.
@@ -151,3 +147,7 @@ SCT.js is distributed under the MIT license.
 This library is currently intended for **Node.js environments only**.
 
 It relies on Node.js built-in modules like `crypto` and `Buffer` that are not available in web browsers. While it is theoretically possible to use this library in a browser by using polyfills (such as `crypto-browserify` and `buffer`), this is not officially supported or tested at this time. Future versions may include a browser-compatible bundle.
+
+## Acknowledgements
+
+This library is a full-featured TypeScript port of the excellent [rustls/sct.rs](https://github.com/rustls/sct.rs) library. It is designed to be a 1:1 functional equivalent and includes a faithful port of the original's comprehensive test suite to ensure correctness.
