@@ -14,8 +14,8 @@ export const SIGNATURE_ALGORITHMS = {
 // SCT Version
 export const SCT_V1 = 0;
 
-// LogEntryType
-export const LOG_ENTRY_TYPE = {
+// EntryType
+export const ENTRY_TYPE = {
   X509_ENTRY: [0, 0],
   PRECERT_ENTRY: [0, 1],
 };

@@ -1,18 +1,28 @@
-import { createPublicKey, KeyObject } from 'crypto';
-import * as fs from 'fs';
-import * as path from 'path';
 import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import { readFileSync } from 'fs';
+import { createPublicKey, KeyObject } from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = dirname(__filename);
 
-/**
- * Reads a file from the test/testdata directory.
- * @param fileName The name of the file to read.
- * @returns A Buffer containing the file data.
- */
-export function readTestData(fileName: string): Buffer {
-  return fs.readFileSync(path.join(__dirname, 'testdata', fileName));
+export function getScriptDir(): string {
+  return __dirname;
+}
+
+export function getTestDataDir(testType: 'precert' | 'x509'): string {
+  return join(__dirname, '..', 'test', `${testType}-testdata`);
+}
+
+export function readTestData(fileName: string, testType: 'precert' | 'x509'): Buffer {
+  return readFileSync(join(getTestDataDir(testType), fileName));
+}
+
+export function getPrecertKeys(alg: string): { privateKey: string; publicKey: Buffer } {
+  const keysDir = join(getTestDataDir('precert'), 'keys');
+  const privateKey = readFileSync(join(keysDir, `${alg}-private.pem`), 'utf-8');
+  const publicKey = readFileSync(join(keysDir, `${alg}-public.der`));
+  return { privateKey, publicKey };
 }
 
 /**

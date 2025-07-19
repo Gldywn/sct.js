@@ -1,5 +1,5 @@
 import { createVerify, KeyObject } from 'crypto';
-import { BufferReader } from './util.js';
+import { BufferReader } from './utils.js';
 import { Sct, VerificationError } from './types.js';
 import * as constants from './constants.js';
 
@@ -16,22 +16,30 @@ function getCryptoAlgorithm(sct: Sct): string | undefined {
   }
 }
 
-export function verifySctSignature(sct: Sct, logPublicKey: Buffer | KeyObject, certificate: Buffer): boolean {
+/**
+ * Verifies the signature of a Signed Certificate Timestamp (SCT).
+ * @param sct The parsed SCT object.
+ * @param signedEntry The entry that was signed (either a Precertificate or an X.509 certificate).
+ * @param entryType The type of the `signedEntry`.
+ * @param logPublicKey The public key of the log that issued the SCT.
+ * @returns `true` if the signature is valid, `false` otherwise.
+ */
+export function verifySctSignature(
+  sct: Sct,
+  signedEntry: Buffer,
+  entryType: (typeof constants.ENTRY_TYPE)[keyof typeof constants.ENTRY_TYPE],
+  logPublicKey: Buffer | KeyObject
+): boolean {
   const algorithm = getCryptoAlgorithm(sct);
   if (!algorithm) {
     return false;
   }
-
   // Reconstruct the digitally signed data
   // https://tools.ietf.org/html/rfc6962#section-3.2
 
   // The timestamp is a 64-bit unsigned integer
   const timestampBuffer = Buffer.alloc(8);
   timestampBuffer.writeBigUInt64BE(sct.timestamp);
-
-  // The certificate length is a 24-bit unsigned integer
-  const certLengthBuffer = Buffer.alloc(3);
-  certLengthBuffer.writeUIntBE(certificate.length, 0, 3);
 
   // The extensions length is a 16-bit unsigned integer
   const extLengthBuffer = Buffer.alloc(2);
@@ -41,9 +49,14 @@ export function verifySctSignature(sct: Sct, logPublicKey: Buffer | KeyObject, c
     Buffer.from([constants.SCT_V1]),
     Buffer.from([constants.MERKLE_LEAF_TYPE.TIMESTAMPED_ENTRY]),
     timestampBuffer,
-    Buffer.from(constants.LOG_ENTRY_TYPE.X509_ENTRY),
-    certLengthBuffer,
-    certificate,
+    Buffer.from(entryType),
+    entryType === constants.ENTRY_TYPE.X509_ENTRY
+      ? (() => {
+          const certLengthBuffer = Buffer.alloc(3);
+          certLengthBuffer.writeUIntBE(signedEntry.length, 0, 3);
+          return Buffer.concat([certLengthBuffer, signedEntry]);
+        })()
+      : signedEntry, // For precert_entry, the length is part of the PreCert structure
     extLengthBuffer,
     sct.extensions,
   ]);
@@ -64,6 +77,7 @@ export function parseSct(buffer: Buffer): Sct {
   }
 
   const version = reader.readUInt8();
+
   if (version !== constants.SCT_V1) {
     throw new Error(VerificationError.UnsupportedSctVersion);
   }

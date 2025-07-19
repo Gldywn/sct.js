@@ -28,6 +28,10 @@
   },
   "scripts": {
     "test": "tsx --test $(find test -name '*.test.ts')",
+    "test:setup": "npm run test:generate-test-keys && npm run test:fetch-test-precert-data && npm run test:generate-test-precert-data",
+    "test:generate-test-keys": "tsx scripts/generate-test-keys.ts",
+    "test:generate-test-precert-data": "tsx scripts/generate-test-precert-data.ts",
+    "test:fetch-test-precert-data": "tsx scripts/fetch-test-precert-data.ts",
     "coverage": "c8 --check-coverage --lines 95 --reporter=text --reporter=lcov tsx --test $(find test -name '*.test.ts')",
     "dev": "tsx watch src/index.ts",
     "build": "tsup",
@@ -36,11 +40,16 @@
   },
   "devDependencies": {
     "@types/node": "^24.0.12",
+    "@types/node-fetch": "^2.6.12",
     "c8": "^10.1.3",
     "jsdom": "^26.1.0",
     "prettier": "^3.6.2",
     "tsup": "^8.5.0",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "node-fetch": "^2.7.0",
+    "pkijs": "^3.0.8"
   }
 }

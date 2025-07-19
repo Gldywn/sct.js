@@ -1,11 +1,11 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { KeyObject } from 'crypto';
-import { verifySct } from '../src/index.js';
+import { ENTRY_TYPE, verifySct } from '../src/index.js';
 import { Log } from '../src/types.js';
-import * as generatedFixtures from './generated.fixtures.js';
-import * as googleFixtures from './google.fixtures.js';
-import { readTestData } from './util.js';
+import * as generatedFixtures from './x509-generated.fixtures.js';
+import * as googleFixtures from './x509-google.fixtures.js';
+import { readTestData } from '../scripts/utils.js';
 
 const CERT = Buffer.from('cert');
 const NOW = 1235;
@@ -22,7 +22,7 @@ function createBufferTest(log: Log, sctFile: string) {
     key: Buffer.from(keyAsPem),
   };
 
-  const result = verifySct(CERT, readTestData(sctFile), NOW, [logWithBufferKey]);
+  const result = verifySct(readTestData(sctFile, 'x509'), CERT, ENTRY_TYPE.X509_ENTRY, NOW, [logWithBufferKey]);
   assert.deepStrictEqual(result, logWithBufferKey);
 }
 
@@ -49,7 +49,7 @@ describe('PEM Buffer Verification (Generated)', () => {
 });
 
 describe('PEM Buffer Verification (Google)', () => {
-  const cert = readTestData('google-cert.bin');
+  const cert = readTestData('google-cert.bin', 'x509');
   const now = 1499619463644;
 
   function createGoogleBufferTest(log: Log, sctFile: string) {
@@ -63,7 +63,7 @@ describe('PEM Buffer Verification (Google)', () => {
       key: Buffer.from(keyAsPem),
     };
 
-    const result = verifySct(cert, readTestData(sctFile), now, [logWithBufferKey]);
+    const result = verifySct(readTestData(sctFile, 'x509'), cert, ENTRY_TYPE.X509_ENTRY, now, [logWithBufferKey]);
     assert.deepStrictEqual(result, logWithBufferKey);
   }
 
