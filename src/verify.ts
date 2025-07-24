@@ -1,6 +1,6 @@
 import { createVerify, KeyObject } from 'crypto';
 import { BufferReader } from './utils.js';
-import { Sct, VerificationError } from './types.js';
+import { Sct, SctVerificationError, VerificationError } from './types.js';
 import * as constants from './constants.js';
 
 function getCryptoAlgorithm(sct: Sct): string | undefined {
@@ -73,17 +73,27 @@ export function parseSct(buffer: Buffer): Sct {
 
   // Check buffer length before parsing
   if (!reader.hasBytes(1)) {
-    throw new Error(VerificationError.MalformedSct);
+    throw new SctVerificationError(
+      VerificationError.MalformedSct,
+      'SCT is too short to contain a version number',
+    );
   }
 
   const version = reader.readUInt8();
 
   if (version !== constants.SCT_V1) {
-    throw new Error(VerificationError.UnsupportedSctVersion);
+    throw new SctVerificationError(
+      VerificationError.UnsupportedSctVersion,
+      `Unsupported SCT version: ${version}`,
+    );
   }
 
-  if (!reader.hasBytes(32 + 8 + 2)) {
-    throw new Error(VerificationError.MalformedSct);
+  const MIN_V1_SCT_LENGTH = 32 + 8 + 2;
+  if (!reader.hasBytes(MIN_V1_SCT_LENGTH)) {
+    throw new SctVerificationError(
+      VerificationError.MalformedSct,
+      `SCT is too short to contain V1 header fields`,
+    );
   }
 
   const logId = reader.readBytes(32);
@@ -91,23 +101,36 @@ export function parseSct(buffer: Buffer): Sct {
 
   const extensionsLength = reader.readUInt16BE();
   if (!reader.hasBytes(extensionsLength)) {
-    throw new Error(VerificationError.MalformedSct);
+    throw new SctVerificationError(
+      VerificationError.MalformedSct,
+      `SCT is too short to contain extensions (expected ${extensionsLength} bytes, got ${reader.remaining()})`,
+    );
   }
   const extensions = reader.readBytes(extensionsLength);
 
-  if (!reader.hasBytes(2 + 2)) {
-    throw new Error(VerificationError.MalformedSct);
+  const MIN_TRAILER_LENGTH = 2 + 2;
+  if (!reader.hasBytes(MIN_TRAILER_LENGTH)) {
+    throw new SctVerificationError(
+      VerificationError.MalformedSct,
+      `SCT is too short to contain signature algorithm and length`,
+    );
   }
   const signatureAlgorithm = reader.readUInt16BE();
   const signatureLength = reader.readUInt16BE();
 
   if (!reader.hasBytes(signatureLength)) {
-    throw new Error(VerificationError.MalformedSct);
+    throw new SctVerificationError(
+      VerificationError.MalformedSct,
+      `SCT is too short to contain signature (expected ${signatureLength} bytes, got ${reader.remaining()})`,
+    );
   }
   const signature = reader.readBytes(signatureLength);
 
   if (reader.remaining() > 0) {
-    throw new Error(VerificationError.MalformedSct);
+    throw new SctVerificationError(
+      VerificationError.MalformedSct,
+      `SCT has trailing data (${reader.remaining()} bytes)`,
+    );
   }
 
   return {

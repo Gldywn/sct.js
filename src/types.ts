@@ -81,6 +81,20 @@ export function shouldBeFatal(err: VerificationError): boolean {
 }
 
 /**
+ * Custom error for SCT verification failures.
+ * Encapsulates a machine-readable error code and a human-readable message.
+ */
+export class SctVerificationError extends Error {
+  public readonly code: VerificationError;
+
+  constructor(code: VerificationError, message: string) {
+    super(message);
+    this.name = 'SctVerificationError';
+    this.code = code;
+  }
+}
+
+/**
  * Represents a Signed Certificate Timestamp.
  */
 export interface Sct {

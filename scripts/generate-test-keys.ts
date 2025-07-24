@@ -1,13 +1,13 @@
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join } from 'path';
-import { generateKeyPairSync } from 'crypto';
+import { generateKeyPairSync, KeyPairKeyObjectResult } from 'crypto';
 import { getTestDataDir } from './utils.js';
 
 const PRECERT_TESTDATA_DIR = getTestDataDir('precert');
 const PRECERT_TESTDATA_KEYS_DIR = join(PRECERT_TESTDATA_DIR, 'keys');
 
 function generateKeys(algorithm: 'ecdsa-p256' | 'ecdsa-p384' | 'rsa-2048' | 'rsa-3072' | 'rsa-4096') {
-  let keyPair;
+  let keyPair: KeyPairKeyObjectResult;
 
   if (algorithm.startsWith('ec')) {
     let namedCurve: string;
@@ -50,7 +50,7 @@ function generateKeys(algorithm: 'ecdsa-p256' | 'ecdsa-p384' | 'rsa-2048' | 'rsa
   console.log(`Generated and saved ${algorithm} keys.`);
 }
 
-function main() {
+async function main() {
   const algs = ['ecdsa-p256', 'ecdsa-p384', 'rsa-2048', 'rsa-3072', 'rsa-4096'];
   for (const alg of algs) {
     generateKeys(alg as any);
@@ -58,4 +58,7 @@ function main() {
   console.log('Precert test keys generation complete.');
 }
 
-main();
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

@@ -34,7 +34,7 @@ describe('Pre-certificate SCT verification (Google)', () => {
                         Date.now(),
                         [fixtures.log0]
                     ),
-                { message: VerificationError.InvalidSignature },
+                { code: VerificationError.InvalidSignature },
                 'Verification should fail with InvalidSignature'
             );
         });
@@ -49,7 +49,7 @@ describe('Pre-certificate SCT verification (Google)', () => {
                         Date.now(),
                         [fixtures.log1]
                     ),
-                { message: VerificationError.UnknownLog },
+                { code: VerificationError.UnknownLog },
                 'Verification should fail with UnknownLog'
             );
         });
@@ -81,7 +81,7 @@ describe('Pre-certificate SCT verification (Google)', () => {
                         Date.now(),
                         [fixtures.log1]
                     ),
-                { message: VerificationError.InvalidSignature },
+                { code: VerificationError.InvalidSignature },
                 'Verification should fail with InvalidSignature'
             );
         });
@@ -96,7 +96,7 @@ describe('Pre-certificate SCT verification (Google)', () => {
                         Date.now(),
                         [fixtures.log0]
                     ),
-                { message: VerificationError.UnknownLog },
+                { code: VerificationError.UnknownLog },
                 'Verification should fail with UnknownLog'
             );
         });

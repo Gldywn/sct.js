@@ -3,7 +3,7 @@ export * from './types.js';
 
 export { reconstructPrecert } from './precert.js';
 
-import { Log, VerificationError } from './types.js';
+import { Log, SctVerificationError, VerificationError } from './types.js';
 import { ENTRY_TYPE } from './constants.js';
 import { Sct } from './types.js';
 import { parseSct, verifySctSignature } from './verify.js';
@@ -44,15 +44,28 @@ export function verifySct(
 
   const log = findLog(logs, parsedSct);
   if (!log) {
-    throw new Error(VerificationError.UnknownLog);
+    const logId = parsedSct.logId.toString('hex');
+    throw new SctVerificationError(
+      VerificationError.UnknownLog,
+      `Log ID ${logId} not found in trusted logs`,
+    );
   }
 
   if (!verifySctSignature(parsedSct, signedEntry, entryType, log.key)) {
-    throw new Error(VerificationError.InvalidSignature);
+    const logId = parsedSct.logId.toString('hex');
+    throw new SctVerificationError(
+      VerificationError.InvalidSignature,
+      `Invalid SCT signature from log ${logId}`,
+    );
   }
 
   if (parsedSct.timestamp > BigInt(atTime)) {
-    throw new Error(VerificationError.TimestampInFuture);
+    const sctDate = new Date(Number(parsedSct.timestamp));
+    const verificationDate = new Date(atTime);
+    throw new SctVerificationError(
+      VerificationError.TimestampInFuture,
+      `SCT timestamp (${sctDate.toISOString()}) is in the future (verification time: ${verificationDate.toISOString()})`,
+    );
   }
 
   return log;

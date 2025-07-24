@@ -1,4 +1,3 @@
-#!/usr/bin/env ts-node
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join } from 'path';
 import { createSign, createHash, randomBytes } from 'crypto';
@@ -7,7 +6,6 @@ import * as constants from '../src/constants.js';
 import { getTestDataDir, readTestData, getPrecertKeys } from './utils.js';
 
 const PRECERT_TESTDATA_DIR = getTestDataDir('precert');
-const X509_TESTDATA_DIR = getTestDataDir('x509');
 
 const LEAF_CERT = readTestData('leaf_google-cert.bin', 'precert');
 const ISSUER_CERT = readTestData('issuer_google-cert.bin', 'precert');

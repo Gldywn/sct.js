@@ -1,4 +1,3 @@
-#!/usr/bin/env ts-node
 import { execSync } from 'child_process';
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join } from 'path';

@@ -27,7 +27,7 @@ for (const [alg, log] of Object.entries(fixtures.logs)) {
                         Date.now(),
                         [log]
                     ),
-                { message: VerificationError.TimestampInFuture },
+                { code: VerificationError.TimestampInFuture },
                 'Verification should fail with TimestampInFuture'
             );
         });
@@ -42,7 +42,7 @@ for (const [alg, log] of Object.entries(fixtures.logs)) {
                         Date.now(),
                         [log]
                     ),
-                { message: VerificationError.InvalidSignature },
+                { code: VerificationError.InvalidSignature },
                 'Verification should fail with InvalidSignature'
             );
         });
@@ -57,7 +57,7 @@ for (const [alg, log] of Object.entries(fixtures.logs)) {
                         Date.now(),
                         [log]
                     ),
-                { message: VerificationError.UnknownLog },
+                { code: VerificationError.UnknownLog },
                 'Verification should fail with LogNotFound'
             );
         });
