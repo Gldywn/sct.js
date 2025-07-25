@@ -3,7 +3,7 @@ import { KeyObject } from 'crypto';
 /**
  * Describes a CT log.
  */
-export interface Log {
+type LogBase = {
   /**
    * The operator's name/description of the log.
    * This field is not used by the library.
@@ -38,7 +38,16 @@ export interface Log {
    * This field is not used by the library.
    */
   max_merge_delay: number;
-}
+};
+
+export type Log =
+  | (LogBase & {
+      status: 'qualified' | 'usable' | 'readonly';
+    })
+  | (LogBase & {
+      status: 'retired';
+      retirement_date: number;
+    });
 
 /**
  * How sct.js reports errors.
@@ -68,6 +77,11 @@ export enum VerificationError {
    * The SCT refers to an unknown log.
    */
   UnknownLog = 'UnknownLog',
+
+  /**
+   * The SCT was issued by a retired log after its retirement date.
+   */
+  SctFromRetiredLog = 'SctFromRetiredLog',
 }
 
 /**

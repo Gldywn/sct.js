@@ -7,8 +7,8 @@ import {
 } from '../src/index.js';
 import * as fixtures from './precert-google.fixtures.js';
 
-describe('Pre-certificate SCT verification (Google)', () => {
-    describe('SCT 0', () => {
+describe('Pre-certificate SCT verification with Google test data', () => {
+    describe('When verifying SCT 0', () => {
         it('verifies a valid SCT', () => {
             assert.doesNotThrow(() => {
                 verifySct(
@@ -55,7 +55,7 @@ describe('Pre-certificate SCT verification (Google)', () => {
         });
     });
 
-    describe('SCT 1', () => {
+    describe('When verifying SCT 1', () => {
         it('verifies a valid SCT', () => {
             assert.doesNotThrow(() => {
                 verifySct(

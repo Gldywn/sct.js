@@ -22,11 +22,11 @@ function createBufferTest(log: Log, sctFile: string) {
     key: Buffer.from(keyAsPem),
   };
 
-  const result = verifySct(readTestData(sctFile, 'x509'), CERT, ENTRY_TYPE.X509_ENTRY, NOW, [logWithBufferKey]);
-  assert.deepStrictEqual(result, logWithBufferKey);
+  const { log: resultLog } = verifySct(readTestData(sctFile, 'x509'), CERT, ENTRY_TYPE.X509_ENTRY, NOW, [logWithBufferKey]);
+  assert.deepStrictEqual(resultLog, logWithBufferKey);
 }
 
-describe('PEM Buffer Verification (Generated)', () => {
+describe('PEM buffer verification with generated data', () => {
   test('ecdsa_p256', () => {
     createBufferTest(generatedFixtures.TEST_LOG_ECDSA_P256, 'ecdsa_p256-basic-sct.bin');
   });
@@ -48,7 +48,7 @@ describe('PEM Buffer Verification (Generated)', () => {
   });
 });
 
-describe('PEM Buffer Verification (Google)', () => {
+describe('PEM buffer verification with Google data', () => {
   const cert = readTestData('google-cert.bin', 'x509');
   const now = 1499619463644;
 
@@ -63,8 +63,8 @@ describe('PEM Buffer Verification (Google)', () => {
       key: Buffer.from(keyAsPem),
     };
 
-    const result = verifySct(readTestData(sctFile, 'x509'), cert, ENTRY_TYPE.X509_ENTRY, now, [logWithBufferKey]);
-    assert.deepStrictEqual(result, logWithBufferKey);
+    const { log: resultLog } = verifySct(readTestData(sctFile, 'x509'), cert, ENTRY_TYPE.X509_ENTRY, now, [logWithBufferKey]);
+    assert.deepStrictEqual(resultLog, logWithBufferKey);
   }
 
   test('google_pilot', () => {

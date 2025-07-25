@@ -35,7 +35,8 @@
     "coverage": "c8 --exclude 'scripts/**' --exclude 'test/**' --exclude 'src/utils.ts' --check-coverage --lines 100 --reporter=text --reporter=lcov tsx --test $(find test -name '*.test.ts')",
     "build": "tsup",
     "format": "prettier --write .",
-    "example": "tsx examples/verify.ts"
+    "example:x509": "tsx examples/verify-x509.ts",
+    "example:precert": "tsx examples/verify-precert.ts"
   },
   "devDependencies": {
     "@types/node": "^24.0.12",

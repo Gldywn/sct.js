@@ -14,6 +14,7 @@ function createLog(logKeyFileName: string): Log {
         url: 'test.com',
         operated_by: 'Test',
         max_merge_delay: 0,
+        status: 'usable',
     };
 }
 

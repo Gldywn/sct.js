@@ -33,84 +33,89 @@ npm install @gldywn/sct.js
 
 ## Usage
 
-The following example demonstrates how to verify Signed Certificate Timestamps (SCTs) for both standard X.509 certificates and for pre-certificates:
+The library supports two primary verification scenarios: for SCTs embedded in a **pre-certificate** (most common, found in the final certificate) and for SCTs delivered via **TLS extension or OCSP**, which are verified against the final X.509 certificate.
+
+### Verifying a Pre-certificate SCT
+
+This is the most common use case, typically used to verify an SCT that was embedded directly into a certificate during its issuance. To do this, you need both the final certificate (`leafCert`) and the certificate of its issuer (`issuerCert`). The `reconstructPrecert` function is used to create the data structure that the SCT was originally signed against.
+
+> For a complete, runnable example, see [examples/verify-precert.ts](./examples/verify-precert.ts).
 
 ```typescript
-import { createPublicKey, createHash } from 'crypto';
 import { verifySct, reconstructPrecert, ENTRY_TYPE, Log } from '@gldywn/sct.js';
-import { jwkFromRawP256, readTestData } from '../scripts/utils.js';
-
-// =============================================================================
-// Example 1: Verifying an SCT for an X.509 Certificate
-// =============================================================================
 
 try {
-  // The final, DER-encoded X.509 certificate.
-  const certificate = readTestData('google-cert.bin', 'x509');
-
-  // The SCT, obtained either from the certificate or a TLS extension.
-  const sct = readTestData('google-sct0.bin', 'x509');
-
-  // A list of trusted logs. In a real application, this should be a dynamic,
-  // up-to-date list from a trusted source.
-  const x509TrustedLogs: Log[] = [
-    {
-      description: "Google 'Pilot' log",
-      key: jwkFromRawP256(readTestData('google-pilot-pubkey.bin', 'x509')),
-      id: Buffer.from('a4b90990b418581487bb13a2cc67700a3c359804f91bdfb8e377cd0ec80ddc10', 'hex'),
-      url: 'ct.googleapis.com/pilot/',
-      operated_by: 'Google',
-      max_merge_delay: 86400,
-    },
-  ];
-
-  const x509Result = verifySct(sct, certificate, ENTRY_TYPE.X509_ENTRY, Date.now(), x509TrustedLogs);
-  console.log(`X.509 SCT verification successful - Log: ${x509Result.description}`);
-} catch (error) {
-  console.error(`SCT verification failed: ${error.message}`);
-}
-
-// =============================================================================
-// Example 2: Verifying an SCT for a Pre-certificate
-// =============================================================================
-
-try {
-  // The leaf certificate and the issuer's certificate are required.
+  // The leaf certificate (end-entity) and the issuer certificate both DER-encoded X.509
   const leafCert = readTestData('leaf_google-cert.bin', 'precert');
   const issuerCert = readTestData('issuer_google-cert.bin', 'precert');
 
-  // The SCT for the pre-certificate.
+  // The SCT embedded within the leaf certificate (extracted from the certificate itself)
   const precertSct = readTestData('google-sct0.bin', 'precert');
 
-  // The public key for the log that issued the SCT.
-  const logKey = createPublicKey({
-    key: readTestData('log0-pubkey.bin', 'precert'),
-    format: 'der',
-    type: 'spki',
-  });
+  // Helper function to reconstruct the precertificate data structure to verify the SCT against
+  const precert = reconstructPrecert(leafCert, issuerCert);
 
-  // A list of trusted logs.
-  const precertTrustedLogs: Log[] = [
+  // A list of trusted logs
+  const trustedLogs: Log[] = [
     {
       description: 'Fetched Google Test Log',
-      key: logKey,
+      key: getTrustedLogKey(),
       id: createHash('sha256')
-        .update(logKey.export({ type: 'spki', format: 'der' }))
+        .update(getTrustedLogKey().export({ type: 'spki', format: 'der' }))
         .digest(),
       url: 'test.com',
       operated_by: 'Test',
       max_merge_delay: 0,
+      status: 'usable',
     },
   ];
 
-  // 1. Reconstruct the precertificate data structure
-  const precert = reconstructPrecert(leafCert, issuerCert);
-
-  // 2. Verify the SCT against the reconstructed precert
-  const precertResult = verifySct(precertSct, precert, ENTRY_TYPE.PRECERT_ENTRY, Date.now(), precertTrustedLogs);
-  console.log(`Pre-cert SCT verification successful - Log: ${precertResult.description}`);
+  const { log, sct } = verifySct(precertSct, precert, ENTRY_TYPE.PRECERT_ENTRY, Date.now(), trustedLogs);
+  console.log(`Pre-cert SCT verification successful!`);
+  console.log(`  Log ID: ${log.id.toString('hex')}`);
+  console.log(`  Log: ${log.description}`);
+  console.log(`  Timestamp: ${new Date(Number(sct.timestamp)).toISOString()}`);
 } catch (error) {
-  console.error(`Pre-cert SCT verification failed: ${error.message}`);
+  console.error('Error while verifying pre-certificate SCT:', error);
+}
+```
+
+### Verifying an X.509 SCT (from TLS Extension / OCSP)
+
+This method is used when the SCT is delivered separately from the certificate, such as in a `signed_certificate_timestamp` TLS extension or a stapled OCSP response. In this case, the SCT is verified against the final, DER-encoded X.509 certificate directly, and no reconstruction is needed.
+
+> For a complete, runnable example, see [examples/verify-x509.ts](./examples/verify-x509.ts).
+
+```typescript
+import { verifySct, ENTRY_TYPE, Log } from '@gldywn/sct.js';
+
+try {
+  // The leaf certificate (end-entity), DER-encoded X.509
+  const certificate = readTestData('google-cert.bin', 'x509');
+
+  // The SCT, obtained either from the "signed_certificate_timestamp" TLS extension or OCSP response
+  const sct = readTestData('google-sct0.bin', 'x509');
+
+  // A list of trusted logs
+  const trustedLogs: Log[] = [
+    {
+      description: "Google 'Pilot' log",
+      key: jwkFromRawEcdsa(readTestData('google-pilot-pubkey.bin', 'x509')),
+      id: Buffer.from('a4b90990b418581487bb13a2cc67700a3c359804f91bdfb8e377cd0ec80ddc10', 'hex'),
+      url: 'ct.googleapis.com/pilot/',
+      operated_by: 'Google',
+      max_merge_delay: 86400,
+      status: 'usable',
+    },
+  ];
+
+  const { log, sct: parsedSct } = verifySct(sct, certificate, ENTRY_TYPE.X509_ENTRY, Date.now(), trustedLogs);
+  console.log(`X.509 SCT verification successful!`);
+  console.log(`  Log ID: ${log.id.toString('hex')}`);
+  console.log(`  Log: ${log.description}`);
+  console.log(`  Timestamp: ${new Date(Number(parsedSct.timestamp)).toISOString()}`);
+} catch (error) {
+  console.error('Error while verifying X.509 SCT:', error);
 }
 ```
 

@@ -1,8 +1,3 @@
-export * from './constants.js';
-export * from './types.js';
-
-export { reconstructPrecert } from './precert.js';
-
 import { Log, SctVerificationError, VerificationError } from './types.js';
 import { ENTRY_TYPE } from './constants.js';
 import { Sct } from './types.js';
@@ -39,24 +34,31 @@ export function verifySct(
   entryType: (typeof ENTRY_TYPE)[keyof typeof ENTRY_TYPE],
   atTime: number,
   logs: Log[],
-): Log {
+): { log: Log; sct: Sct } {
   const parsedSct = parseSct(sct);
 
   const log = findLog(logs, parsedSct);
   if (!log) {
     const logId = parsedSct.logId.toString('hex');
-    throw new SctVerificationError(
-      VerificationError.UnknownLog,
-      `Log ID ${logId} not found in trusted logs`,
-    );
+    throw new SctVerificationError(VerificationError.UnknownLog, `Log ID ${logId} not found in trusted logs`);
+  }
+
+  // If the log is retired, check if the SCT was issued before the
+  // retirement date.
+  if (log.status === 'retired') {
+    if (parsedSct.timestamp > BigInt(log.retirement_date)) {
+      const sctDate = new Date(Number(parsedSct.timestamp));
+      const retirementDate = new Date(log.retirement_date);
+      throw new SctVerificationError(
+        VerificationError.SctFromRetiredLog,
+        `SCT was issued by retired log ${log.description} after its retirement date (SCT timestamp: ${sctDate.toISOString()}, retirement date: ${retirementDate.toISOString()})`,
+      );
+    }
   }
 
   if (!verifySctSignature(parsedSct, signedEntry, entryType, log.key)) {
     const logId = parsedSct.logId.toString('hex');
-    throw new SctVerificationError(
-      VerificationError.InvalidSignature,
-      `Invalid SCT signature from log ${logId}`,
-    );
+    throw new SctVerificationError(VerificationError.InvalidSignature, `Invalid SCT signature from log ${logId}`);
   }
 
   if (parsedSct.timestamp > BigInt(atTime)) {
@@ -68,5 +70,11 @@ export function verifySct(
     );
   }
 
-  return log;
+  return { log, sct: parsedSct };
 }
+
+export * from './constants.js';
+export * from './types.js';
+
+export { reconstructPrecert } from './precert.js';
+export { parseSct } from './verify.js';

@@ -11,6 +11,7 @@ export const GOOGLE_PILOT_LOG: Log = {
     119, 205, 14, 200, 13, 220, 16,
   ]),
   max_merge_delay: 86400,
+  status: 'usable',
 };
 
 export const SYMANTEC_LOG: Log = {
@@ -23,4 +24,5 @@ export const SYMANTEC_LOG: Log = {
     17, 196, 205, 182, 236, 190, 204,
   ]),
   max_merge_delay: 86400,
+  status: 'usable',
 };

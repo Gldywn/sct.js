@@ -8,14 +8,15 @@ import { readTestData } from '../scripts/utils.js';
 const CERT = Buffer.from('cert');
 const NOW = 1235;
 
-describe('Generated SCT tests', () => {
+describe('X.509 SCT verification with generated data', () => {
   // ECDSA P-256
-  describe('ecdsa_p256', () => {
+  describe('When using ecdsa_p256', () => {
     const logs = [fixtures.TEST_LOG_ECDSA_P256];
+    
     test('basic', () => {
       const sct = readTestData('ecdsa_p256-basic-sct.bin', 'x509');
-      const result = verifySct(sct, CERT, ENTRY_TYPE.X509_ENTRY, NOW, logs);
-      assert.deepStrictEqual(result, fixtures.TEST_LOG_ECDSA_P256);
+      const { log } = verifySct(sct, CERT, ENTRY_TYPE.X509_ENTRY, NOW, logs);
+      assert.deepStrictEqual(log, fixtures.TEST_LOG_ECDSA_P256);
     });
 
     test('wrongtime', () => {
@@ -30,12 +31,13 @@ describe('Generated SCT tests', () => {
   });
 
   // ECDSA P-384
-  describe('ecdsa_p384', () => {
+  describe('When using ecdsa_p384', () => {
     const logs = [fixtures.TEST_LOG_ECDSA_P384];
+    
     test('basic', () => {
       const sct = readTestData('ecdsa_p384-basic-sct.bin', 'x509');
-      const result = verifySct(sct, CERT, ENTRY_TYPE.X509_ENTRY, NOW, logs);
-      assert.deepStrictEqual(result, fixtures.TEST_LOG_ECDSA_P384);
+      const { log } = verifySct(sct, CERT, ENTRY_TYPE.X509_ENTRY, NOW, logs);
+      assert.deepStrictEqual(log, fixtures.TEST_LOG_ECDSA_P384);
     });
 
     test('wrongtime', () => {
@@ -50,12 +52,13 @@ describe('Generated SCT tests', () => {
   });
 
   // RSA 2048
-  describe('rsa2048', () => {
+  describe('When using rsa2048', () => {
     const logs = [fixtures.TEST_LOG_RSA2048];
+    
     test('basic', () => {
       const sct = readTestData('rsa2048-basic-sct.bin', 'x509');
-      const result = verifySct(sct, CERT, ENTRY_TYPE.X509_ENTRY, NOW, logs);
-      assert.deepStrictEqual(result, fixtures.TEST_LOG_RSA2048);
+      const { log } = verifySct(sct, CERT, ENTRY_TYPE.X509_ENTRY, NOW, logs);
+      assert.deepStrictEqual(log, fixtures.TEST_LOG_RSA2048);
     });
 
     test('wrongtime', () => {
@@ -70,12 +73,13 @@ describe('Generated SCT tests', () => {
   });
 
   // RSA 3072
-  describe('rsa3072', () => {
+  describe('When using rsa3072', () => {
     const logs = [fixtures.TEST_LOG_RSA3072];
+    
     test('basic', () => {
       const sct = readTestData('rsa3072-basic-sct.bin', 'x509');
-      const result = verifySct(sct, CERT, ENTRY_TYPE.X509_ENTRY, NOW, logs);
-      assert.deepStrictEqual(result, fixtures.TEST_LOG_RSA3072);
+      const { log } = verifySct(sct, CERT, ENTRY_TYPE.X509_ENTRY, NOW, logs);
+      assert.deepStrictEqual(log, fixtures.TEST_LOG_RSA3072);
     });
 
     test('wrongtime', () => {
@@ -90,12 +94,13 @@ describe('Generated SCT tests', () => {
   });
 
   // RSA 4096
-  describe('rsa4096', () => {
+  describe('When using rsa4096', () => {
     const logs = [fixtures.TEST_LOG_RSA4096];
+    
     test('basic', () => {
       const sct = readTestData('rsa4096-basic-sct.bin', 'x509');
-      const result = verifySct(sct, CERT, ENTRY_TYPE.X509_ENTRY, NOW, logs);
-      assert.deepStrictEqual(result, fixtures.TEST_LOG_RSA4096);
+      const { log } = verifySct(sct, CERT, ENTRY_TYPE.X509_ENTRY, NOW, logs);
+      assert.deepStrictEqual(log, fixtures.TEST_LOG_RSA4096);
     });
 
     test('wrongtime', () => {
@@ -110,8 +115,9 @@ describe('Generated SCT tests', () => {
   });
 
   // Other failure cases (using ecdsa_p256)
-  describe('other failures', () => {
+  describe('When handling other failure cases', () => {
     const logs = [fixtures.TEST_LOG_ECDSA_P256];
+    
     test('junk', () => {
       const sct = readTestData('ecdsa_p256-junk-sct.bin', 'x509');
       assert.throws(() => verifySct(sct, CERT, ENTRY_TYPE.X509_ENTRY, NOW, logs), { code: VerificationError.MalformedSct });
