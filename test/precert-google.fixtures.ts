@@ -3,19 +3,19 @@ import { readTestData } from '../scripts/utils.js';
 import { Log } from '../src/index.js';
 
 function createLog(logKeyFileName: string): Log {
-    const publicKeyBuffer = readTestData(logKeyFileName, 'precert');
-    const id = createHash('sha256').update(publicKeyBuffer).digest();
-    const key = createPublicKey({ key: publicKeyBuffer, format: 'der', type: 'spki' });
+  const publicKeyBuffer = readTestData(logKeyFileName, 'precert');
+  const id = createHash('sha256').update(publicKeyBuffer).digest();
+  const key = createPublicKey({ key: publicKeyBuffer, format: 'der', type: 'spki' });
 
-    return {
-        id,
-        key,
-        description: `Dynamically fetched log for ${logKeyFileName}`,
-        url: 'test.com',
-        operated_by: 'Test',
-        max_merge_delay: 0,
-        status: 'usable',
-    };
+  return {
+    id,
+    key,
+    description: `Dynamically fetched log for ${logKeyFileName}`,
+    url: 'test.com',
+    operated_by: 'Test',
+    max_merge_delay: 0,
+    status: 'usable',
+  };
 }
 
 export const sct0 = readTestData('google-sct0.bin', 'precert');

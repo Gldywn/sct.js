@@ -22,7 +22,9 @@ function createBufferTest(log: Log, sctFile: string) {
     key: Buffer.from(keyAsPem),
   };
 
-  const { log: resultLog } = verifySct(readTestData(sctFile, 'x509'), CERT, ENTRY_TYPE.X509_ENTRY, NOW, [logWithBufferKey]);
+  const { log: resultLog } = verifySct(readTestData(sctFile, 'x509'), CERT, ENTRY_TYPE.X509_ENTRY, NOW, [
+    logWithBufferKey,
+  ]);
   assert.deepStrictEqual(resultLog, logWithBufferKey);
 }
 
@@ -63,7 +65,9 @@ describe('PEM buffer verification with Google data', () => {
       key: Buffer.from(keyAsPem),
     };
 
-    const { log: resultLog } = verifySct(readTestData(sctFile, 'x509'), cert, ENTRY_TYPE.X509_ENTRY, now, [logWithBufferKey]);
+    const { log: resultLog } = verifySct(readTestData(sctFile, 'x509'), cert, ENTRY_TYPE.X509_ENTRY, now, [
+      logWithBufferKey,
+    ]);
     assert.deepStrictEqual(resultLog, logWithBufferKey);
   }
 

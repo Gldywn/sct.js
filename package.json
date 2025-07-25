@@ -34,7 +34,7 @@
     "test:update-test-data": "npm run test:fetch-test-precert-data && npm run test:generate-test-precert-data",
     "coverage": "c8 --exclude 'scripts/**' --exclude 'test/**' --exclude 'src/utils.ts' --check-coverage --lines 100 --reporter=text --reporter=lcov tsx --test $(find test -name '*.test.ts')",
     "build": "tsup",
-    "format": "prettier --write .",
+    "format": "prettier --write '**/*.ts'",
     "example:x509": "tsx examples/verify-x509.ts",
     "example:precert": "tsx examples/verify-precert.ts"
   },

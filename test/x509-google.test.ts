@@ -19,5 +19,5 @@ describe('X.509 SCT verification with Google test data', () => {
     const sct = readTestData('google-sct1.bin', 'x509');
     const { log } = verifySct(sct, cert, ENTRY_TYPE.X509_ENTRY, now, logs);
     assert.deepStrictEqual(log, SYMANTEC_LOG);
-  }); 
+  });
 });

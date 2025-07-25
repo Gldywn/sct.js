@@ -15,7 +15,7 @@ It uses the built-in `node:crypto` module for all cryptographic operations.
 
 ## How SCTs are Acquired
 
-Signed Certificate Timestamps (SCTs) are the core of Certificate Transparency, but they can be delivered to a client in several ways. This library is responsible for the *verification* of an SCT, regardless of how it was acquired. It is the responsibility of the client application to obtain the certificate and its associated SCTs.
+Signed Certificate Timestamps (SCTs) are the core of Certificate Transparency, but they can be delivered to a client in several ways. This library is responsible for the _verification_ of an SCT, regardless of how it was acquired. It is the responsibility of the client application to obtain the certificate and its associated SCTs.
 
 There are three primary methods for delivering SCTs:
 
@@ -132,6 +132,7 @@ npm run test:setup
 ```
 
 This command performs the following steps:
+
 1.  **Generates test keys:** Creates new key pairs for all supported algorithms.
 2.  **Generates pre-cert data:** Builds a fresh suite of mock SCTs and test cases.
 3.  **Fetches real-world data:** Downloads the latest test certificates from Google.
@@ -139,6 +140,7 @@ This command performs the following steps:
 ### Running Tests
 
 To run the complete test suite:
+
 ```sh
 npm test
 ```

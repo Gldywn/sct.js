@@ -28,7 +28,7 @@ export function verifySctSignature(
   sct: Sct,
   signedEntry: Buffer,
   entryType: (typeof constants.ENTRY_TYPE)[keyof typeof constants.ENTRY_TYPE],
-  logPublicKey: Buffer | KeyObject
+  logPublicKey: Buffer | KeyObject,
 ): boolean {
   const algorithm = getCryptoAlgorithm(sct);
   if (!algorithm) {
@@ -73,27 +73,18 @@ export function parseSct(buffer: Buffer): Sct {
 
   // Check buffer length before parsing
   if (!reader.hasBytes(1)) {
-    throw new SctVerificationError(
-      VerificationError.MalformedSct,
-      'SCT is too short to contain a version number',
-    );
+    throw new SctVerificationError(VerificationError.MalformedSct, 'SCT is too short to contain a version number');
   }
 
   const version = reader.readUInt8();
 
   if (version !== constants.SCT_V1) {
-    throw new SctVerificationError(
-      VerificationError.UnsupportedSctVersion,
-      `Unsupported SCT version: ${version}`,
-    );
+    throw new SctVerificationError(VerificationError.UnsupportedSctVersion, `Unsupported SCT version: ${version}`);
   }
 
   const MIN_V1_SCT_LENGTH = 32 + 8 + 2;
   if (!reader.hasBytes(MIN_V1_SCT_LENGTH)) {
-    throw new SctVerificationError(
-      VerificationError.MalformedSct,
-      `SCT is too short to contain V1 header fields`,
-    );
+    throw new SctVerificationError(VerificationError.MalformedSct, `SCT is too short to contain V1 header fields`);
   }
 
   const logId = reader.readBytes(32);
