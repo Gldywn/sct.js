@@ -128,7 +128,7 @@ This project includes a comprehensive test suite to ensure correctness and stabi
 The repository includes pre-generated test data. To update the fixtures for pre-certificate tests, run:
 
 ```sh
-npm run test:setup
+npm run test:update-test-data
 ```
 
 This command performs the following steps:

@@ -97,7 +97,7 @@ async function generateForAlgorithm(alg: string, precert: Buffer) {
   writeFileSync(join(PRECERT_TESTDATA_DIR, `${alg}_sct-valid.bin`), validSctBuffer);
 
   // SCT with future timestamp
-  const futureTimestamp = now + BigInt(24 * 60 * 60 * 1000);
+  const futureTimestamp = now + BigInt(10 * 365 * 24 * 60 * 60 * 1000); // 10 years from now
   const futureSignedData = createPrecertSignedData(precert, futureTimestamp, extensions);
   const futureSigner = createSign(hashAlgorithm);
   futureSigner.update(futureSignedData);
