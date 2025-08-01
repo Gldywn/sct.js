@@ -1,17 +1,13 @@
 # SCT.js
 
-SCT.js is a Certificate Transparency SCT verifier in TypeScript for Node.js.
-It uses the built-in `node:crypto` module for all cryptographic operations.
+SCT.js is a low-level TypeScript library for Node.js that parses and verifies Signed Certificate Timestamps (SCTs). It provides the core cryptographic tools needed to check SCTs from any source, including those embedded in X.509 certificates or delivered via TLS extensions and OCSP Stapling.
 
 [![Build Status](https://github.com/Gldywn/sct.js/actions/workflows/build.yml/badge.svg)](https://github.com/Gldywn/sct.js/actions/workflows/build.yml)
 [![Coverage Status (codecov.io)](https://codecov.io/gh/Gldywn/sct.js/branch/main/graph/badge.svg)](https://codecov.io/gh/Gldywn/sct.js)
 [![npm](https://img.shields.io/npm/v/@gldywn/sct.js.svg)](https://www.npmjs.com/package/@gldywn/sct.js)
 
-## Status
-
-- The library is stable and ready for production use.
-- Supports both **X.509** and **Pre-certificate** SCT entries.
-- The test suite for X.509 entries is ported from the original Rust library. It has been augmented with a comprehensive, generated test suite for Pre-certificate entries, covering all success and error cases for multiple signature algorithms (ECDSA P-256/P-384, RSA 2048/3072/4096).
+The library is stable and ready for production use, with support for both **X.509** and **Pre-certificate** SCT entries.
+The test suite for X.509 entries is ported from the original Rust library and has been augmented with a comprehensive, generated test suite for Pre-certificate entries. This new suite covers all success and error cases for multiple signature algorithms, including ECDSA P-256/P-384 and RSA 2048/3072/4096.
 
 ## How SCTs are Acquired
 

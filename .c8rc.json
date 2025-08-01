@@ -1,0 +1,11 @@
+{
+  "check-coverage": true,
+  "lines": 100,
+  "include": [
+    "src/**"
+  ],
+  "reporter": [
+    "text",
+    "lcov"
+  ]
+}
