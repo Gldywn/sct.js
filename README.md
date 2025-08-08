@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./assets/header.png" alt="sct.js"/>
+</p>
+
 # SCT.js
 
 SCT.js is a low-level TypeScript library for Node.js that parses and verifies Signed Certificate Timestamps (SCTs). It provides the core cryptographic tools needed to check SCTs from any source, including those embedded in X.509 certificates or delivered via TLS extensions and OCSP Stapling.
