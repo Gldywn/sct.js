@@ -9,6 +9,7 @@ SCT.js is a low-level TypeScript library for Node.js that parses and verifies Si
 [![Build Status](https://github.com/Gldywn/sct.js/actions/workflows/build.yml/badge.svg)](https://github.com/Gldywn/sct.js/actions/workflows/build.yml)
 [![Coverage Status (codecov.io)](https://codecov.io/gh/Gldywn/sct.js/branch/main/graph/badge.svg)](https://codecov.io/gh/Gldywn/sct.js)
 [![npm](https://img.shields.io/npm/v/@gldywn/sct.js.svg)](https://www.npmjs.com/package/@gldywn/sct.js)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 The library is stable and ready for production use, with support for both **X.509** and **Pre-certificate** SCT entries.
 The test suite for X.509 entries is ported from the original Rust library and has been augmented with a comprehensive, generated test suite for Pre-certificate entries. This new suite covers all success and error cases for multiple signature algorithms, including ECDSA P-256/P-384 and RSA 2048/3072/4096.
